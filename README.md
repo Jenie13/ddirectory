@@ -28,10 +28,11 @@ void changeDirectory() {
     std::cout << "Enter directory path: ";
     std::cin >> dirPath;
 
-    if (fs::current_path(dirPath)) {
+    try {
+        fs::current_path(dirPath);
         std::cout << "Directory changed successfully." << std::endl;
-    } else {
-        std::cout << "Failed to change directory." << std::endl;
+    } catch (const fs::filesystem_error& e) {
+        std::cout << "Failed to change directory: " << e.what() << std::endl;
     }
 }
 
@@ -40,7 +41,8 @@ void removeDirectory() {
     std::cout << "Enter directory name: ";
     std::cin >> dirName;
 
-    if (fs::remove_all(dirName)) {
+    std::uintmax_t removedCount = fs::remove_all(dirName);
+    if (removedCount > 0) {
         std::cout << "Directory removed successfully." << std::endl;
     } else {
         std::cout << "Failed to remove directory." << std::endl;
@@ -66,10 +68,11 @@ void copyFile() {
     std::cout << "Enter destination file name: ";
     std::cin >> destination;
 
-    if (fs::copy_file(source, destination)) {
+    try {
+        fs::copy_file(source, destination, fs::copy_options::overwrite_existing);
         std::cout << "File copied successfully." << std::endl;
-    } else {
-        std::cout << "Failed to copy file." << std::endl;
+    } catch (const fs::filesystem_error& e) {
+        std::cout << "Failed to copy file: " << e.what() << std::endl;
     }
 }
 
@@ -80,10 +83,11 @@ void moveFile() {
     std::cout << "Enter destination file name: ";
     std::cin >> destination;
 
-    if (fs::rename(source, destination)) {
+    try {
+        fs::rename(source, destination);
         std::cout << "File moved successfully." << std::endl;
-    } else {
-        std::cout << "Failed to move file." << std::endl;
+    } catch (const fs::filesystem_error& e) {
+        std::cout << "Failed to move file: " << e.what() << std::endl;
     }
 }
 
